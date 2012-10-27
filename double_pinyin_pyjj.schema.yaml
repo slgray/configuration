@@ -49,7 +49,9 @@ speller:
   delimiter: " '"  # 隔音符號用「'」；第一位的空白用來自動插入到音節邊界處
   algebra:  # 拼寫運算規則，這個纔是實現雙拼方案的重點。寫法有很多種，當然也可以把四百多個音節碼一條一條地列舉
     - erase/^xx$/             # 碼表中有幾個拼音不明的字，編碼成xx了，消滅他
-    - derive/^([jqxy])u$/$1v/
+    - derive/^([jqxy])u$/$1v/  
+    - derive/^([zcs])h/$1/             # zh, ch, sh => z, c, s
+    - derive/^([zcs])([^h])/$1h$2/     # z, c, s => zh, ch, sh
     - xform/^([aoe].*)$/O$1/  # 添上固定的零聲母o，先標記爲大寫O
     - xform/er$|ing$/Q/       # 替換韻母鍵
     - xform/ei$/W/        

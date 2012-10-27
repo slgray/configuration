@@ -63,6 +63,7 @@ speller:
     - xform/^zh/V/
     - xform/uo$/O/
     - xform/ou$/P/
+    - xform/ue$|ve$|uai$/X/   #在ai前面防止被替换掉
     - xform/ai$/S/
     - xform/[iu]ang$/H/       #※1
     - xform/ang$/G/           # 檢查一下在此之前是否已轉換過了帶界音的ang；好，※1處有了
@@ -71,7 +72,6 @@ speller:
     - xform/ao$/D/
     - xform/in$/L/
     - xform/un$/Z/
-    - xform/uai$|ue$/X/
     - xform/uan$/C/          #※3
     - xform/an$/F/           # 如果※2、※3還無有出現在上文中，把F的an移到后面
     - xform/ui$/V/
@@ -105,12 +105,12 @@ translator:
     - xform/(\w)k/$1ao/       # 默默檢查：雙拼碼 o 已經轉換過了
     - xform/(\w)l/$1in/
     - xform/(\w)z/$1un/
+    - xform/([dtgkhrzcs])v/$1ui/       # 放在ve前面
     - xform/([nl])x/$1ve/
     - xform/([jqxy])x/$1ue/
     - xform/(\w)x/$1uai/
     - xform/(\w)c/$1uan/
-    - xform/(\w)v/$1ui/
-    - xform/([gkhaevrzcs])b/$1ua/
+    - xform/([gkhvzsi])b/$1ua/
     - xform/(\w)b/$1ia/
     - xform/(\w)m/$1ie/
     - xform/0(\w)/$1/          # 好了，現在可以把零聲母拿掉啦

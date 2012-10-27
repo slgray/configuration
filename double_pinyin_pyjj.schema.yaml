@@ -1,0 +1,139 @@
+# Rime schema
+# vim: set sw=2 sts=2 et:
+# encoding: utf-8
+
+schema:
+  schema_id: double_pinyin_pyjj  # 專有的方案標識
+  name: PYJJ雙拼
+  version: "0.11"
+  author:
+    - 陈立彬 <slgraychan@gmail.com>
+  description: |
+    朙月拼音＋拼音加加雙拼方案。
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - name: simplification
+    states: [ 漢字, 汉字 ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - r10n_translator
+    - reverse_lookup_translator
+  filters:
+    - simplifier
+    - uniquifier
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba  # 呃，倒背字母表完全是個人喜好
+  delimiter: " '"  # 隔音符號用「'」；第一位的空白用來自動插入到音節邊界處
+  algebra:  # 拼寫運算規則，這個纔是實現雙拼方案的重點。寫法有很多種，當然也可以把四百多個音節碼一條一條地列舉
+    - erase/^xx$/             # 碼表中有幾個拼音不明的字，編碼成xx了，消滅他
+    - derive/^([jqxy])u$/$1v/
+    - xform/^([aoe].*)$/O$1/  # 添上固定的零聲母o，先標記爲大寫O
+    - xform/er$|ing$/Q/       # 替換韻母鍵
+    - xform/ei$/W/        
+    - xform/en$/R/            # 對應兩種韻母的；音節er現在變爲OR了
+    - xform/eng$/T/
+    - xform/i?ong$/Y/
+    - xform/^ch/U/            # 替換聲母鍵，用大寫以防與原有的字母混淆
+    - xform/^sh/I/
+    - xform/^zh/V/
+    - xform/uo$/O/
+    - xform/ou$/P/
+    - xform/ai$/S/
+    - xform/[iu]ang$/H/       #※1
+    - xform/ang$/G/           # 檢查一下在此之前是否已轉換過了帶界音的ang；好，※1處有了
+    - xform/ian$/J/           # ※2、※3
+    - xform/iao$/K/           # 對——像這樣讓iao提前出場
+    - xform/ao$/D/
+    - xform/in$/L/
+    - xform/un$/Z/
+    - xform/uai$|ue$/X/
+    - xform/uan$/C/          #※3
+    - xform/an$/F/           # 如果※2、※3還無有出現在上文中，把F的an移到后面
+    - xform/ui$/V/
+    - xform/ia$|ua$/B/
+    - xform/iu$/N/
+    - xform/ie$/M/
+    - xlit/QWRTYUIOPSDFGHMJCKLZXVBN/qwrtyuiopsdfghmjcklzxvbn/  # 最後把雙拼碼全部變小寫
+
+translator:
+  dictionary: luna_pinyin           # 與【朙月拼音】共用詞典
+  prism: double_pinyin_pyjj         # prism 要以本輸入方案的名稱來命名，以免把朙月拼音的拼寫映射表覆蓋掉
+  preedit_format:                   # 這段代碼用來將輸入的雙拼碼反轉爲全拼顯示；待見雙拼碼的可以把這段拿掉
+    - xform/o(\w)/0$1/              # 零聲母先改爲0，以方便後面的轉換
+    - xform/(\w)n/$1iu/             # 提前轉換雙拼碼 n 和 g，因爲轉換後的拼音裏就快要出現這兩個字母了，那時將難以分辨出雙拼碼
+    - xform/(\w)g/$1ang/            # 當然也可以採取事先將雙拼碼變爲大寫的辦法來與轉換過的拼音做區分，可誰讓我是高手呢
+    - xform/([qtypdjlxbnm])q/$1ing/ # 對應多種韻母的雙拼碼，按搭配的聲母做區分（最好別用排除式如 [^o]r 容易出狀況）
+    - xform/0q/0er/                 # 另一種情況，注意先不消除0，以防後面把e當作聲母轉換爲ch
+    - xform/(\w)w/$1ei/        
+    - xform/(\w)r/$1en/
+    - xform/(\w)t/$1eng/
+    - xform/([qjx])y/$1iong/  
+    - xform/(\w)y/$1ong/             
+    - xform/([dtnlgkhaevrzcs])o/$1uo/
+    - xform/(\w)p/$1ou/
+    - xform/(\w)s/$1ai/
+    - xform/(\w)d/$1ao/
+    - xform/(\w)f/$1an/
+    - xform/([nljqx])h/$1iang/
+    - xform/(\w)h/$1uang/
+    - xform/(\w)j/$1an/
+    - xform/(\w)k/$1ao/       # 默默檢查：雙拼碼 o 已經轉換過了
+    - xform/(\w)l/$1in/
+    - xform/(\w)z/$1un/
+    - xform/([nl])x/$1ve/
+    - xform/([jqxy])x/$1ue/
+    - xform/(\w)x/$1uai/
+    - xform/(\w)c/$1uan/
+    - xform/(\w)v/$1ui/
+    - xform/([gkhaevrzcs])b/$1ua/
+    - xform/(\w)b/$1ia/
+    - xform/(\w)m/$1ie/
+    - xform/0(\w)/$1/          # 好了，現在可以把零聲母拿掉啦
+    - "xform/(^|[ '])v/$1zh/"  # 復原聲母，音節開始處的雙拼字母a改寫爲zh；其他位置的才真正是a
+    - "xform/(^|[ '])u/$1ch/"
+    - "xform/(^|[ '])i/$1sh/"  
+    - xform/([nljqxy])v/$1ü/   # 這樣纔是漢語拼音 :-)
+
+reverse_lookup:
+  dictionary: cangjie5
+  enable_completion: true
+  prefix: "`"
+  tips: 〔倉頡〕
+  preedit_format:
+    - "xlit|abcdefghijklmnopqrstuvwxyz|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
+  comment_format:
+    - xform/([nl])v/$1ü/
+
+punctuator:
+  import_preset: default
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    reverse_lookup: "`[a-z]*$"

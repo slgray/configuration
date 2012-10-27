@@ -9,7 +9,7 @@ schema:
   author:
     - 陈立彬 <slgraychan@gmail.com>
   description: |
-    朙月拼音＋拼音加加雙拼方案。
+    朙月拼音＋拼音加加雙拼方案。fork form rime's default double_pinyin_abc.schema.yaml
 
 switches:
   - name: ascii_mode

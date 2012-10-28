@@ -92,7 +92,7 @@ translator:
     - xform/(\w)r/$1en/
     - xform/0q/0er/                 # 接※1 另一種情況。注意先不消除，先把r转换了，不然会把er改成ern的
     - xform/(\w)t/$1eng/
-    - xform/([dtnlgkhaevrzcs])o/$1uo/ # 把o放前面y前面，应为y会o转换出来
+    - xform/([dtnlgkhuivrzcs])o/$1uo/ # 把o放前面y前面，应为y会o转换出来 add i ie:sh
     - xform/([qjx])y/$1iong/  
     - xform/(\w)y/$1ong/             
     - xform/(\w)p/$1ou/

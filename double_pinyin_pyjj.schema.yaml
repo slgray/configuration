@@ -102,7 +102,7 @@ translator:
     - xform/([nljqx])h/$1iang/
     - xform/(\w)h/$1uang/
     - xform/(\w)j/$1ian/
-    - xform/(\w)k/$1ao/       # 默默檢查：雙拼碼 o 已經轉換過了
+    - xform/(\w)k/$1iao/       # 默默檢查：雙拼碼 o 已經轉換過了k => iao
     - xform/(\w)l/$1in/
     - xform/(\w)z/$1un/
     - xform/([dtgkhrzcs])v/$1ui/       # 放在ve前面

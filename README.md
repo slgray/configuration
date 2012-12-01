@@ -11,4 +11,4 @@
 
 * local.conf
 
-> Arch字体设置文件
+  > Arch字体设置文件
